@@ -11,6 +11,9 @@ import 'package:open_settings_plus/core/open_settings_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../home/home_screen.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -47,14 +50,8 @@ class _ScanScreenState extends State<ScanScreen> {
 
       // Suscripción a resultados del escaneo
       _scanResultsSubscription = FlutterBluePlus.scanResults.listen((results) {
-        _scanResults = results
-            .where(
-              (r) =>
-                  r.device.platformName.isNotEmpty &&
-                  r.advertisementData.serviceUuids.isNotEmpty &&
-                  r.advertisementData.serviceUuids.first == Guid('ff12'),
-            )
-            .toList();
+        _scanResults =
+            results.where((r) => r.device.advName.isNotEmpty).toList();
         if (mounted) {
           setState(() {});
         }
@@ -157,7 +154,11 @@ class _ScanScreenState extends State<ScanScreen> {
       showErrorDialog(AppLocalizations.of(context)!.allowPermissions);
     }
     try {
-      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
+      await FlutterBluePlus.startScan(
+          timeout: const Duration(seconds: 4),
+          withServices: [
+            Guid("ff12"),
+          ]);
     } catch (e) {
       print("Start Scan Error: $e");
       // showErrorDialog(AppLocalizations.of(context)!.allowPermissions);
@@ -181,12 +182,11 @@ class _ScanScreenState extends State<ScanScreen> {
     if (_isConnecting) {
       return;
     }
-
     showConnectingDialog();
 
     await Future.delayed(const Duration(milliseconds: 1000));
 
-    DeskApi.registerDeskDevice(device.platformName, device.remoteId.str, '1');
+    DeskApi.registerDeskDevice(device.advName, device.remoteId.str, '1');
 
     await device.connect().catchError((e) {
       //hide dialog
@@ -278,6 +278,26 @@ class _ScanScreenState extends State<ScanScreen> {
     return BackgroundBlur(
       child: ScaffoldMessenger(
         child: Scaffold(
+          //skip button
+          floatingActionButton: _scanResults.isEmpty && !_isScanning
+              ? FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  child: Text(AppLocalizations.of(context)!.skip,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      )),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
+                  },
+                )
+              : null,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -439,13 +459,13 @@ class _ScanResultTileState extends State<ScanResultTile> {
   }
 
   Widget _buildTitle(BuildContext context) {
-    if (widget.result.device.platformName.isNotEmpty) {
+    if (widget.result.device.advName.isNotEmpty) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            widget.result.device.platformName,
+            widget.result.device.advName,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleMedium,
           ),
@@ -578,7 +598,7 @@ class _SystemDeviceTileState extends State<SystemDeviceTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(widget.device.platformName),
+      title: Text(widget.device.advName),
       subtitle: Text(widget.device.remoteId.str),
       trailing: ElevatedButton(
         onPressed: isConnected ? widget.onOpen : widget.onConnect,

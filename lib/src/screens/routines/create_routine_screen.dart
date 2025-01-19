@@ -61,26 +61,25 @@ class _CreateRoutineModalState extends State<CreateRoutineModal> {
     print(m2);
     print(m3);
 
-    String message = '${AppLocalizations.of(context)!.memoriesMissing}(';
+    String message = '${AppLocalizations.of(context)!.memoriesMissing}\n';
 
     if (m1 == null) {
-      message += '1,';
+      message += '${AppLocalizations.of(context)!.rest}\n';
     }
     if (m2 == null) {
-      message += '2,';
+      message += '${AppLocalizations.of(context)!.sitting}\n';
     }
     if (m3 == null) {
-      message += '3';
+      message += AppLocalizations.of(context)!.standing;
     }
 
     if (m1 != null && m2 != null && m3 != null) {
       return '';
     } else {
       //remove the last comma if exists
-      if (message.endsWith(',')) {
+      if (message.endsWith('\n')) {
         message = message.substring(0, message.length - 1);
       }
-      message += ')';
     }
 
     //dialog to configure memories

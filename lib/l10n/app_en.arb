@@ -706,5 +706,17 @@
     "connectDesk": "Connect your desk first",
     "@connectDesk": {
         "description": "Instruction to connect the desk"
+    },
+    "skip": "Skip",
+    "@skip": {
+        "description": "Button to skip the action"
+    },
+    "nameChanged": "Name changed",
+    "@nameChanged": {
+        "description": "Name changed message"
+    },
+    "memoryNotConfigured": "The memory is not configured. Please set it manually in the app to enable statistics and start your routines properly.",
+    "@memoryNotConfigured": {
+        "description": "Instruction to configure the memory"
     }
 }

@@ -151,6 +151,23 @@ class AuthController with ChangeNotifier {
       );
     }
 
+    if (user.user!.objMemories != null) {
+      List<ObjMemory> memories = user.user!.objMemories!;
+      for (int i = 0; i < memories.length; i++) {
+        if (memories[i].iOrder != null && memories[i].dHeightInch != null) {
+          if (memories[i].iOrder == 1) {
+            await prefs.setDouble('memory1', memories[i].dHeightInch!);
+          }
+          if (memories[i].iOrder == 2) {
+            await prefs.setDouble('memory2', memories[i].dHeightInch!);
+          }
+          if (memories[i].iOrder == 3) {
+            await prefs.setDouble('memory3', memories[i].dHeightInch!);
+          }
+        }
+      }
+    }
+
     if (user.user!.objRoutine != null) {
       ObjRoutine routine = user.user!.objRoutine!;
       await prefs.setInt('routineId', routine.iId!);
@@ -236,6 +253,8 @@ class AuthController with ChangeNotifier {
       if (response['success']) {
         log(response['data'].toString());
         _firebaseUser = userCredential.user;
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool("newUser", false);
         UserResponse userResponse = userResponseFromJson(response['data']);
         print(response['data']);
         _userInfo = userResponse.user;
@@ -309,7 +328,8 @@ class AuthController with ChangeNotifier {
           if (response['success']) {
             UserResponse userResponse = userResponseFromJson(response['data']);
             print(response['data']);
-
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setBool("newUser", false);
             await _saveUserData(userResponse);
             Navigator.pushNamedAndRemoveUntil(
                 context, AppRoutes.home, (route) => false);
@@ -397,6 +417,8 @@ class AuthController with ChangeNotifier {
         if (response['success']) {
           UserResponse userResponse = userResponseFromJson(response['data']);
           await _saveUserData(userResponse);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool("newUser", false);
           Navigator.pushNamedAndRemoveUntil(
               context, AppRoutes.home, (route) => false);
           return true;

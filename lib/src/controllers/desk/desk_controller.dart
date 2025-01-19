@@ -65,10 +65,24 @@ class DeskController extends ChangeNotifier {
   Timer? _stableTimer;
   bool isStable = true;
 
+  DeskController() {
+    loadSavedName();
+  }
+
+  /// Loads the saved device name from SharedPreferences
+  Future<void> loadSavedName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedName = prefs.getString('device_name');
+    if (savedName != null) {
+      deviceName = savedName;
+      notifyListeners();
+    }
+  }
+
   void setDevice(BluetoothDevice? newDevice) {
     device = newDevice;
     if (device != null) {
-      deviceName = device!.platformName;
+      deviceName = device!.advName;
     }
     if (newDevice == null) {
       deviceName = "";
@@ -306,7 +320,7 @@ class DeskController extends ChangeNotifier {
   }
 
   //change name
-  void changeName(String name) {
+  Future<void> changeName(String name) async {
     if (deviceInfoCharacteristic != null) {
       // Convertir el nombre a bytes ASCII
       List<int> hexArray = convertNameToHex(name);
@@ -322,7 +336,12 @@ class DeskController extends ChangeNotifier {
       print("Comando final: $command");
 
       // Enviar el comando al dispositivo
-      deviceInfoCharacteristic!.write(command, withoutResponse: false);
+      await deviceInfoCharacteristic!.write(command, withoutResponse: false);
+
+      // Save name to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('device_name', name);
+
       deviceName = name;
       notifyListeners();
     }

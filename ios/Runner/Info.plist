@@ -20,12 +20,14 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>controller</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.2</string>
+	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
-	<string>4</string>
+	<string>5</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -38,7 +40,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>5</string>
 	<key>GIDClientID</key>
 	<string>13709382143-oi2nrtlnfp5nmd8tns99ken862krub5m.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>

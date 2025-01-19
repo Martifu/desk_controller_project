@@ -706,5 +706,17 @@
     "connectDesk": "Conectate a tu escritorio",
     "@connectDesk": {
         "description": "Mensaje para conectar el escritorio"
+    },
+    "skip": "Saltar",
+    "@skip": {
+        "description": "Botón para saltar la acción"
+    },
+    "nameChanged": "Nombre cambiado",
+    "@nameChanged": {
+        "description": "Mensaje de nombre cambiado"
+    },
+    "memoryNotConfigured": "La memoria no está configurada. Por favor, configúrala manualmente en la app para habilitar las estadísticas y comenzar tus rutinas correctamente.",
+    "@memoryNotConfigured": {
+        "description": "Instrucción para configurar la memoria"
     }
 }

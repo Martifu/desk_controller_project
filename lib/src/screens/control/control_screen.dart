@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:animate_do/animate_do.dart';
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:controller/src/screens/routines/create_routine_screen.dart';
+import 'package:controller/src/widgets/toast_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +46,10 @@ class _ControlScreenState extends State<ControlScreen>
 
   bool disableControls = false;
   bool isDragging = false;
+
+  UniqueKey memoy1Key = UniqueKey();
+  UniqueKey memoy2Key = UniqueKey();
+  UniqueKey memoy3Key = UniqueKey();
 
   @override
   void initState() {
@@ -243,7 +248,7 @@ class _ControlScreenState extends State<ControlScreen>
         opacityShadow: .9,
         showSkipInLastTarget: true,
         alignSkip: Alignment.topRight,
-
+        textSkip: AppLocalizations.of(context)!.skip,
         // alignSkip: Alignment.bottomRight,
         // textSkip: "SKIP",
         // paddingFocus: 10,
@@ -318,7 +323,9 @@ class _ControlScreenState extends State<ControlScreen>
     print("App reanudada");
     //verifica si hay rutina activa
     var routineController = context.read<RoutineController>();
-    routineController.checkAndCancelTimer();
+    if (routineController.isActive) {
+      routineController.checkAndCancelTimer();
+    }
   }
 
   PageController pageController = PageController();
@@ -334,8 +341,8 @@ class _ControlScreenState extends State<ControlScreen>
     var measurementController = Provider.of<MeasurementController>(context);
     var routineController = Provider.of<RoutineController>(context);
 
-    if (deskController.device != null) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+    if (deskController.device != null && deskController.device!.isConnected) {
+      Future.delayed(const Duration(milliseconds: 2000), () {
         SharedPreferences.getInstance().then((prefs) {
           if (prefs.getBool('newUser') ?? true) {
             showTutorial();
@@ -349,7 +356,7 @@ class _ControlScreenState extends State<ControlScreen>
       child: Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            surfaceTintColor: Colors.transparent,
+            surfaceTintColor: const Color.fromARGB(0, 43, 36, 36),
             leading: const SizedBox(),
             backgroundColor: Colors.transparent,
             centerTitle: true,
@@ -377,8 +384,7 @@ class _ControlScreenState extends State<ControlScreen>
                                 builder: (context) {
                                   TextEditingController controller =
                                       TextEditingController(
-                                          text: deskController
-                                              .device!.platformName);
+                                          text: deskController.deviceName);
 
                                   GlobalKey<FormState> key =
                                       GlobalKey<FormState>();
@@ -421,6 +427,8 @@ class _ControlScreenState extends State<ControlScreen>
                                           if (key.currentState!.validate()) {
                                             deskController
                                                 .changeName(controller.text);
+                                            ToastService.showSuccess(context,
+                                                '${AppLocalizations.of(context)!.nameChanged}: ${controller.text}');
                                             Navigator.pop(context);
                                           }
                                         },
@@ -838,12 +846,13 @@ class _ControlScreenState extends State<ControlScreen>
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       ControlSquareButton(
+                                        name: 'manual',
                                         key: setMemoryButtonKey,
                                         manual: true,
                                         active: false,
                                         memoryConfigured: false,
                                         asset: 'assets/images/icons/1.svg',
-                                        onPressed: () async {
+                                        onPressed: (val) async {
                                           HapticFeedback.lightImpact();
                                           await showDialog(
                                               context: context,
@@ -868,14 +877,23 @@ class _ControlScreenState extends State<ControlScreen>
                                                         case 1:
                                                           deskController
                                                               .setupMemory1();
+                                                          memoy1Key =
+                                                              UniqueKey();
+                                                          setState(() {});
                                                           break;
                                                         case 2:
                                                           deskController
                                                               .setupMemory2();
+                                                          memoy2Key =
+                                                              UniqueKey();
+                                                          setState(() {});
                                                           break;
                                                         case 3:
                                                           deskController
                                                               .setupMemory3();
+                                                          memoy3Key =
+                                                              UniqueKey();
+                                                          setState(() {});
                                                           break;
                                                         default:
                                                       }
@@ -889,36 +907,123 @@ class _ControlScreenState extends State<ControlScreen>
                                         },
                                       ),
                                       ControlSquareButton(
+                                          name: 'memory3',
+                                          key: memoy3Key,
                                           asset:
                                               'assets/images/icons/stand_up.png',
                                           memoryConfigured:
                                               deskController.memory3Configured,
                                           active: controlState ==
                                               ControlState.standUp,
-                                          onPressed: () {
+                                          onPressed: (val) {
                                             HapticFeedback.lightImpact();
                                             deskController.moveMemory3();
+                                            if (!val) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return DialogConfirm(
+                                                        icon: Icons.warning,
+                                                        iconColor:
+                                                            Colors.red[100],
+                                                        title:
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .wait,
+                                                        content: AppLocalizations
+                                                                .of(context)!
+                                                            .memoryNotConfigured,
+                                                        confirmText:
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .confirm,
+                                                        cancelText:
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .cancel,
+                                                        onConfirm: () {},
+                                                        onCancel: () {});
+                                                  });
+                                            }
                                           }),
                                       ControlSquareButton(
+                                          key: memoy2Key,
+                                          name: 'memory2',
                                           asset: 'assets/images/icons/rest.png',
                                           active:
                                               controlState == ControlState.sit2,
                                           memoryConfigured:
                                               deskController.memory2Configured,
-                                          onPressed: () {
+                                          onPressed: (val) {
                                             HapticFeedback.lightImpact();
                                             deskController.moveMemory2();
+                                            if (!val) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return DialogConfirm(
+                                                        icon: Icons.warning,
+                                                        iconColor:
+                                                            Colors.red[100],
+                                                        title:
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .wait,
+                                                        content: AppLocalizations
+                                                                .of(context)!
+                                                            .memoryNotConfigured,
+                                                        confirmText:
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .confirm,
+                                                        cancelText:
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .cancel,
+                                                        onConfirm: () {},
+                                                        onCancel: () {});
+                                                  });
+                                            }
                                           }),
                                       ControlSquareButton(
+                                        name: 'memory1',
+                                        key: memoy1Key,
                                         asset:
                                             'assets/images/icons/sitting.png',
                                         active:
                                             controlState == ControlState.sit1,
                                         memoryConfigured:
                                             deskController.memory1Configured,
-                                        onPressed: () {
+                                        onPressed: (val) {
                                           HapticFeedback.lightImpact();
                                           deskController.moveMemory1();
+                                          if (!val) {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return DialogConfirm(
+                                                      icon: Icons.warning,
+                                                      iconColor:
+                                                          Colors.red[100],
+                                                      title:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .wait,
+                                                      content: AppLocalizations
+                                                              .of(context)!
+                                                          .memoryNotConfigured,
+                                                      confirmText:
+                                                          AppLocalizations
+                                                                  .of(context)!
+                                                              .confirm,
+                                                      cancelText:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .cancel,
+                                                      onConfirm: () {},
+                                                      onCancel: () {});
+                                                });
+                                          }
                                         },
                                       ),
                                     ],
@@ -928,6 +1033,7 @@ class _ControlScreenState extends State<ControlScreen>
                                     key: routinesKey,
                                     onTap: () {
                                       HapticFeedback.lightImpact();
+
                                       disableControls = true;
                                       setState(() {});
 
@@ -1105,6 +1211,12 @@ class _SpecificHeightWidgetState extends State<SpecificHeightWidget> {
             ? deskController.mmToCm(deskController.maxHeightMM)
             : deskController.mmToInches(deskController.maxHeightMM);
 
+    //round to up min height
+    minHeightConverted = minHeightConverted.ceilToDouble();
+
+    //round to down max height
+    maxHeightConverted = maxHeightConverted.floorToDouble();
+
     // Generate height options based on unit
     heightOptions = [];
     double step =
@@ -1270,22 +1382,22 @@ class _DialogSaveMemoryWidgetState extends State<DialogSaveMemoryWidget> {
               contentPadding: const EdgeInsets.only(left: 10),
               leading: Image.asset(
                 width: 25,
-                'assets/images/icons/sitting.png',
+                'assets/images/icons/stand_up.png',
                 color: Theme.of(context).textTheme.displayLarge!.color,
               ),
-              title: Text(AppLocalizations.of(context)!.rest),
+              title: Text(AppLocalizations.of(context)!.standing),
               onTap: () {
-                selected = 1;
+                selected = 3;
                 setState(() {});
                 widget.onSelected(selected);
               },
               trailing: Radio(
-                value: 1,
+                value: 3,
                 groupValue: selected,
                 onChanged: (value) {
                   selected = value as int;
-                  setState(() {});
                   widget.onSelected(selected);
+                  setState(() {});
                 },
               ),
             ),
@@ -1334,22 +1446,22 @@ class _DialogSaveMemoryWidgetState extends State<DialogSaveMemoryWidget> {
               contentPadding: const EdgeInsets.only(left: 10),
               leading: Image.asset(
                 width: 25,
-                'assets/images/icons/stand_up.png',
+                'assets/images/icons/sitting.png',
                 color: Theme.of(context).textTheme.displayLarge!.color,
               ),
-              title: Text(AppLocalizations.of(context)!.standing),
+              title: Text(AppLocalizations.of(context)!.rest),
               onTap: () {
-                selected = 3;
+                selected = 1;
                 setState(() {});
                 widget.onSelected(selected);
               },
               trailing: Radio(
-                value: 3,
+                value: 1,
                 groupValue: selected,
                 onChanged: (value) {
                   selected = value as int;
-                  widget.onSelected(selected);
                   setState(() {});
+                  widget.onSelected(selected);
                 },
               ),
             ),
@@ -1360,9 +1472,10 @@ class _DialogSaveMemoryWidgetState extends State<DialogSaveMemoryWidget> {
   }
 }
 
-class ControlSquareButton extends StatelessWidget {
+class ControlSquareButton extends StatefulWidget {
   const ControlSquareButton({
     super.key,
+    required this.name,
     required this.asset,
     this.manual = false,
     required this.onPressed,
@@ -1372,13 +1485,35 @@ class ControlSquareButton extends StatelessWidget {
 
   final String asset;
   final bool manual;
-  final Function() onPressed;
+  final Function(bool) onPressed;
   final bool active;
   final bool memoryConfigured;
+  final String name;
+
+  @override
+  State<ControlSquareButton> createState() => _ControlSquareButtonState();
+}
+
+class _ControlSquareButtonState extends State<ControlSquareButton> {
+  bool isConfigured = false;
+
+  SharedPreferences? prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((value) {
+      setState(() {
+        prefs = value;
+        isConfigured = (prefs!.getDouble(widget.name)) != null;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
+
     return SizedBox(
       width: screenSize.width * 0.15,
       height: screenSize.width * 0.15,
@@ -1388,11 +1523,13 @@ class ControlSquareButton extends StatelessWidget {
             width: screenSize.width * 0.15,
             height: screenSize.width * 0.15,
             child: ElevatedButton(
-              onPressed: onPressed,
+              onPressed: () {
+                widget.onPressed(isConfigured);
+              },
               style: ButtonStyle(
                 padding: WidgetStateProperty.all(EdgeInsets.zero),
                 elevation: WidgetStateProperty.all(0),
-                backgroundColor: active
+                backgroundColor: widget.active
                     ? WidgetStateProperty.all(Theme.of(context).primaryColor)
                     : WidgetStateProperty.all(
                         Theme.of(context).navigationBarTheme.backgroundColor),
@@ -1407,30 +1544,29 @@ class ControlSquareButton extends StatelessWidget {
                   ),
                 ),
               ),
-              child: manual
-                  ? Text(
-                      "M",
-                      //style theme
-                      style: TextStyle(
-                        color: active
-                            ? Colors.white
-                            : Theme.of(context).iconTheme.color,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Airbnb',
-                      ),
-                    )
+              child: widget.manual
+                  ? const Icon(Icons.tune, color: Colors.white, size: 23)
                   : Image.asset(
-                      asset,
+                      widget.asset,
                       width: screenSize.width * 0.07,
                       fit: BoxFit.cover,
-                      color: active
+                      color: widget.active
                           ? Colors.white
                           : Theme.of(context).iconTheme.color,
                     ),
             ),
           ),
-          if (memoryConfigured) const AnimatedIconMemory(),
+          if (widget.memoryConfigured) const AnimatedIconMemory(),
+          if (!isConfigured && widget.name != 'manual')
+            Positioned(
+              top: 4,
+              right: 3,
+              child: Icon(
+                Icons.info,
+                color: Colors.red[100],
+                size: 13,
+              ),
+            )
         ],
       ),
     );
