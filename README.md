@@ -90,7 +90,6 @@ Aplicación Flutter para controlar y gestionar escritorios inteligentes con cone
 ## **Compatibilidad con Plataformas**
 - **iOS:** 12.0+  
 - **Android**  
-- **Web:** Funcionalidad limitada  
 
 ---
 
