@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:controller/src/widgets/toast_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,9 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
-import '../../../routes/auth_routes.dart';
 import '../../controllers/auth/auth_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({Key? key}) : super(key: key);
@@ -44,18 +42,19 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               return Form(
                 key: formKey,
                 child: AlertDialog(
-                  title: const Text("Reauthenticate"),
+                  title: Text(AppLocalizations.of(context)!.reauthenticate),
                   content: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return AppLocalizations.of(context)!
+                            .enterPasswordValidation;
                       }
                       return null;
                     },
                     controller: passwordController,
                     obscureText: true,
-                    decoration:
-                        const InputDecoration(labelText: "Enter your password"),
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.enterPassword),
                   ),
                   actions: [
                     TextButton(
@@ -83,7 +82,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                           }
                         }
                       },
-                      child: const Text("Confirm"),
+                      child: Text(
+                        AppLocalizations.of(context)!.confirm,
+                      ),
                     ),
                   ],
                 ),
@@ -176,7 +177,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       children: [
         Scaffold(
           appBar: AppBar(
-            title: const Text("Delete Account"),
+            title: Text(AppLocalizations.of(context)!.deleteAccount),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
@@ -190,13 +191,13 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 const Icon(Icons.warning, size: 80, color: Colors.red),
                 const SizedBox(height: 16),
                 Text(
-                  "Are you sure you want to delete your account?",
+                  AppLocalizations.of(context)!.deleteAccountTitle,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  "This action is irreversible, and all your data will be permanently deleted.\n\nYou need to reauthenticate to confirm this action.",
+                Text(
+                  AppLocalizations.of(context)!.deleteAccountDescription,
                   textAlign: TextAlign.center,
                 ),
                 const Spacer(),
@@ -211,8 +212,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                         Navigator.pop(
                             context); // Regresa a la pantalla anterior
                       },
-                      child: const Text("Cancel",
-                          style: TextStyle(color: Colors.white)),
+                      child: Text(AppLocalizations.of(context)!.cancel,
+                          style: const TextStyle(color: Colors.white)),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -222,8 +223,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                         HapticFeedback.mediumImpact();
                         await promptForPasswordAndDelete(context);
                       },
-                      child: const Text("Delete Account",
-                          style: TextStyle(color: Colors.white)),
+                      child: Text(AppLocalizations.of(context)!.deleteAccount,
+                          style: const TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),

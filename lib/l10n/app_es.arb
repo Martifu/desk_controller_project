@@ -183,6 +183,18 @@
     "@rest": {
         "description": "Etiqueta de altura de descanso"
     },
+    "standingMemory": "De pie",
+    "@standingMemory": {
+        "description": "Etiqueta de posición de pie"
+    },
+    "sittingMemory": "Sentado",
+    "@sittingMemory": {
+        "description": "Etiqueta de posición sentado"
+    },
+    "restMemory": "Descanso",
+    "@restMemory": {
+        "description": "Etiqueta de posición de descanso"
+    },
     "bluetoothDisabled": "Bluetooth desactivado",
     "@bluetoothDisabled": {
         "description": "Mensaje de Bluetooth desactivado"
@@ -387,7 +399,7 @@
     "@validPassword": {
         "description": "Mensaje de error de contraseña inválida"
     },
-    "enterPasswordValidation": "Pro favor, ingresa tu contraseña",
+    "enterPasswordValidation": "Por favor, ingresa tu contraseña",
     "@enterPasswordValidation": {
         "description": "Marcador de posición de entrada de contraseña"
     },
@@ -659,11 +671,11 @@
     "@times": {
         "description": "Etiqueta de veces"
     },
-    "configureGoals": "Configura tus metas para poder ver tu progreso.",
+    "configureGoals": "Establece tus metas para personalizar tu experiencia y comenzar tus rutinas de manera efectiva.",
     "@configureGoals": {
         "description": "Instrucción para configurar metas"
     },
-    "noGoals": "No hay metas configuradas",
+    "noGoals": "Configura tus metas para empezar",
     "@noGoals": {
         "description": "Mensaje de no metas configuradas"
     },
@@ -707,7 +719,7 @@
     "@connectDesk": {
         "description": "Mensaje para conectar el escritorio"
     },
-    "skip": "Saltar",
+    "skip": "Omitir",
     "@skip": {
         "description": "Botón para saltar la acción"
     },
@@ -715,8 +727,48 @@
     "@nameChanged": {
         "description": "Mensaje de nombre cambiado"
     },
-    "memoryNotConfigured": "La memoria no está configurada. Por favor, configúrala manualmente en la app para habilitar las estadísticas y comenzar tus rutinas correctamente.",
+    "memoryNotConfigured": "La memoria no está configurada en la app. Por favor, configúrala manualmente en la app para habilitar las estadísticas y comenzar tus rutinas correctamente.",
     "@memoryNotConfigured": {
         "description": "Instrucción para configurar la memoria"
+    },
+    "routinesTitle": "Rutinas",
+    "@routinesTitle": {
+        "description": "Título para la sección de rutinas"
+    },
+    "routinesSteps": "Las rutinas te permiten calcular las calorías quemadas y analizar el tiempo que pasas en las tres alturas: descanso, sentado y de pie.\nEs necesario configurar algunas cosas para iniciar tus rutinas:",
+    "@routinesSteps": {
+        "description": "Pasos para iniciar las rutinas"
+    },
+    "step1Title": "1. Configura las memorias en la app",
+    "@step1Title": {
+        "description": "Título para el paso 1"
+    },
+    "step1Description": "Presionando el botón con la letra M puedes configurar la altura de cada botón. Los íconos corresponden a los números 1, 2 y 3 del control de tu escritorio.",
+    "@step1Description": {
+        "description": "Descripción para el paso 1"
+    },
+    "step2Title": "2. Configura tu altura y peso",
+    "@step2Title": {
+        "description": "Título para el paso 2"
+    },
+    "step2Description": "En la sección de configuración, entra a la Configuración Física para establecer tu peso y altura. Esto nos ayudará a calcular las calorías quemadas.",
+    "@step2Description": {
+        "description": "Descripción para el paso 2"
+    },
+    "step3Title": "3. Configura tus metas",
+    "@step3Title": {
+        "description": "Título para el paso 3"
+    },
+    "step3Description": "En la sección de estadísticas, encontrarás una leyenda y un botón que te indicará que debes configurar las metas de tiempo sentado y de pie que deseas pasar al día, además de las calorías que quisieras quemar.",
+    "@step3Description": {
+        "description": "Descripción para el paso 3"
+    },
+    "finalNote": "Después de tener configurado todo correctamente,\npodrás iniciar tus rutinas.",
+    "@finalNote": {
+        "description": "Nota final para iniciar las rutinas"
+    },
+    "reauthenticate": "Reautenticar",
+    "@reauthenticate": {
+        "description": "Botón para reautenticar"
     }
 }

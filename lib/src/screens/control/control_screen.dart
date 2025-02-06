@@ -38,15 +38,17 @@ class _ControlScreenState extends State<ControlScreen>
         WidgetsBindingObserver {
   List<TargetFocus> targets = [];
 
-  GlobalKey heigthButtonsKey = GlobalKey();
-  GlobalKey setMemoryButtonKey = GlobalKey();
-  GlobalKey memoriesButtonsKey = GlobalKey();
-  GlobalKey routinesKey = GlobalKey();
-  GlobalKey specificHeightKey = GlobalKey();
-
   bool disableControls = false;
   bool isDragging = false;
 
+  // Add type parameters to make keys more specific
+  final GlobalKey<State> heigthButtonsKey = GlobalKey<State>();
+  final GlobalKey<State> setMemoryButtonKey = GlobalKey<State>();
+  final GlobalKey<State> memoriesButtonsKey = GlobalKey<State>();
+  final GlobalKey<State> routinesKey = GlobalKey<State>();
+  final GlobalKey<State> specificHeightKey = GlobalKey<State>();
+
+  // Make them final since they shouldn't change
   UniqueKey memoy1Key = UniqueKey();
   UniqueKey memoy2Key = UniqueKey();
   UniqueKey memoy3Key = UniqueKey();
@@ -183,31 +185,128 @@ class _ControlScreenState extends State<ControlScreen>
 
     //routines
     targets.add(
-        TargetFocus(identify: "Target 5", keyTarget: routinesKey, contents: [
-      TargetContent(
-          customPosition: CustomTargetContentPosition(top: 300),
-          align: ContentAlign.custom,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                AppLocalizations.of(context)!.routines,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 24.0),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  AppLocalizations.of(context)!.routinesDescription2,
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+      TargetFocus(
+        identify: "Target 5",
+        keyTarget: routinesKey,
+        paddingFocus: 0,
+        contents: [
+          TargetContent(
+            customPosition: CustomTargetContentPosition(top: 70),
+            align: ContentAlign.custom,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Scrollbar(
+                thumbVisibility: true,
+                thickness: 3,
+                radius: const Radius.circular(10),
+                interactive: true,
+                trackVisibility: true,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      // Título de Rutinas
+                      Text(
+                        AppLocalizations.of(context)!.routinesTitle,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                      // Descripción de Rutinas
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.routinesSteps,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      // Paso 1
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.step1Title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.step1Description,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      // Paso 2
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.step2Title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.step2Description,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      // Paso 3
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.step3Title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.step3Description,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      // Nota final
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 20.0),
+                      //   child: Text(
+                      //     AppLocalizations.of(context)!.finalNote,
+                      //     style: const TextStyle(
+                      //       fontStyle: FontStyle.italic,
+                      //       color: Colors.white,
+                      //       fontSize: 16,
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
                 ),
-              )
-            ],
-          ))
-    ]));
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
 
     //controlStatsSettings
     targets
@@ -440,6 +539,22 @@ class _ControlScreenState extends State<ControlScreen>
                                   );
                                 },
                               );
+                            },
+                          ),
+                        ),
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Text("Tutorial"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              HapticFeedback.lightImpact();
+                              if (deskController.device != null &&
+                                  deskController.device!.isConnected) {
+                                showTutorial();
+                              } else {
+                                ToastService.showInfo(context,
+                                    AppLocalizations.of(context)!.connectDesk);
+                              }
                             },
                           ),
                         ),
@@ -1029,128 +1144,150 @@ class _ControlScreenState extends State<ControlScreen>
                                     ],
                                   ),
                                   const SizedBox(height: 20),
-                                  GestureDetector(
-                                    key: routinesKey,
-                                    onTap: () {
-                                      HapticFeedback.lightImpact();
+                                  Stack(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          HapticFeedback.lightImpact();
 
-                                      disableControls = true;
-                                      setState(() {});
+                                          disableControls = true;
+                                          setState(() {});
 
-                                      if (routineController.isActive) {
-                                        showDialog(
-                                            useRootNavigator: false,
-                                            context: context,
-                                            builder: (context) {
-                                              return DialogConfirm(
-                                                  icon: Icons.info,
-                                                  iconColor: Colors.red[100],
-                                                  title: AppLocalizations.of(
-                                                          context)!
-                                                      .stopRoutine,
-                                                  content: AppLocalizations
-                                                          .of(context)!
-                                                      .confirmStopRoutine,
-                                                  confirmText:
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .stop,
-                                                  cancelText:
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .cancel,
-                                                  onConfirm: () {
-                                                    routineController
-                                                        .cancelRoutine(context);
-                                                  },
-                                                  onCancel: () {});
-                                            });
-                                      } else {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          useSafeArea: true,
-                                          builder: (context) {
-                                            return const CreateRoutineModal();
-                                          },
-                                        );
-                                      }
+                                          if (routineController.isActive) {
+                                            showDialog(
+                                                useRootNavigator: false,
+                                                context: context,
+                                                builder: (context) {
+                                                  return DialogConfirm(
+                                                      icon: Icons.info,
+                                                      iconColor:
+                                                          Colors.red[100],
+                                                      title:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .stopRoutine,
+                                                      content: AppLocalizations
+                                                              .of(context)!
+                                                          .confirmStopRoutine,
+                                                      confirmText:
+                                                          AppLocalizations
+                                                                  .of(context)!
+                                                              .stop,
+                                                      cancelText:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .cancel,
+                                                      onConfirm: () {
+                                                        routineController
+                                                            .cancelRoutine(
+                                                                context);
+                                                      },
+                                                      onCancel: () {});
+                                                });
+                                          } else {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              useSafeArea: true,
+                                              builder: (context) {
+                                                return const CreateRoutineModal();
+                                              },
+                                            );
+                                          }
 
-                                      disableControls = false;
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                      height: 50,
-                                      width: screenSize.width * 0.75,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        border: Border.all(
-                                          color: routineController.isActive
-                                              ? Theme.of(context).primaryColor
-                                              : Theme.of(context)
-                                                  .navigationBarTheme
-                                                  .backgroundColor!,
-                                          width: 1,
-                                        ),
-                                        color: Theme.of(context)
-                                            .navigationBarTheme
-                                            .backgroundColor,
-                                      ),
-                                      child: Center(
-                                        child: Row(
-                                          children: [
-                                            const SizedBox(
-                                              width: 20,
+                                          disableControls = false;
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          height: 50,
+                                          width: screenSize.width * 0.75,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            border: Border.all(
+                                              color: routineController.isActive
+                                                  ? Theme.of(context)
+                                                      .primaryColor
+                                                  : Theme.of(context)
+                                                      .navigationBarTheme
+                                                      .backgroundColor!,
+                                              width: 1,
                                             ),
-                                            if (routineController.isActive)
-                                              Icon(
-                                                Icons.stop,
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                            Text(
-                                              routineController.isActive
-                                                  ? AppLocalizations.of(
-                                                          context)!
-                                                      .stopRoutine
-                                                  : AppLocalizations.of(
-                                                          context)!
-                                                      .initRoutine,
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color:
-                                                      routineController.isActive
+                                            color: Theme.of(context)
+                                                .navigationBarTheme
+                                                .backgroundColor,
+                                          ),
+                                          child: Center(
+                                            child: Row(
+                                              children: [
+                                                const SizedBox(
+                                                  width: 20,
+                                                ),
+                                                if (routineController.isActive)
+                                                  Icon(
+                                                    Icons.stop,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                                Text(
+                                                  routineController.isActive
+                                                      ? AppLocalizations.of(
+                                                              context)!
+                                                          .stopRoutine
+                                                      : AppLocalizations.of(
+                                                              context)!
+                                                          .initRoutine,
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: routineController
+                                                              .isActive
                                                           ? Theme.of(context)
                                                               .primaryColor
                                                           : null,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            const Spacer(),
-                                            routineController.isActive
-                                                ? Text(
-                                                    '${(routineController.totalSeconds ~/ 60).round()}m',
-                                                    style: TextStyle(
-                                                        fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const Spacer(),
+                                                routineController.isActive
+                                                    ? Text(
+                                                        '${(routineController.totalSeconds ~/ 60).round()}m',
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold))
+                                                    : Icon(
+                                                        Icons
+                                                            .double_arrow_sharp,
                                                         color: Theme.of(context)
-                                                            .primaryColor,
-                                                        fontWeight:
-                                                            FontWeight.bold))
-                                                : Icon(
-                                                    Icons.double_arrow_sharp,
-                                                    color: Theme.of(context)
-                                                        .textTheme
-                                                        .displayLarge!
-                                                        .color,
-                                                    size: 18,
-                                                  ),
-                                            const SizedBox(
-                                              width: 20,
+                                                            .textTheme
+                                                            .displayLarge!
+                                                            .color,
+                                                        size: 18,
+                                                      ),
+                                                const SizedBox(
+                                                  width: 20,
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        key: routinesKey,
+                                        right: 0,
+                                        child: const IgnorePointer(
+                                          ignoring: true,
+                                          child: SizedBox(
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -1417,7 +1554,7 @@ class _DialogSaveMemoryWidgetState extends State<DialogSaveMemoryWidget> {
                 'assets/images/icons/rest.png',
                 color: Theme.of(context).textTheme.displayLarge!.color,
               ),
-              title: Text(AppLocalizations.of(context)!.sitting),
+              title: Text(AppLocalizations.of(context)!.rest),
               onTap: () {
                 selected = 2;
                 setState(() {});
@@ -1449,7 +1586,7 @@ class _DialogSaveMemoryWidgetState extends State<DialogSaveMemoryWidget> {
                 'assets/images/icons/sitting.png',
                 color: Theme.of(context).textTheme.displayLarge!.color,
               ),
-              title: Text(AppLocalizations.of(context)!.rest),
+              title: Text(AppLocalizations.of(context)!.sitting),
               onTap: () {
                 selected = 1;
                 setState(() {});
@@ -1545,7 +1682,14 @@ class _ControlSquareButtonState extends State<ControlSquareButton> {
                 ),
               ),
               child: widget.manual
-                  ? const Icon(Icons.tune, color: Colors.white, size: 23)
+                  ? Text(
+                      'M',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).textTheme.displayLarge!.color,
+                      ),
+                    )
                   : Image.asset(
                       widget.asset,
                       width: screenSize.width * 0.07,

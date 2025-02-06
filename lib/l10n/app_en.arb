@@ -179,6 +179,18 @@
     "@sitting": {
         "description": "Sitting height label"
     },
+    "standingMemory": "Standing",
+    "@standingMemory": {
+        "description": "Standing memory label"
+    },
+    "sittingMemory": "Sitting",
+    "@sittingMemory": {
+        "description": "Sitting memory label"
+    },
+    "restMemory": "Rest",
+    "@restMemory": {
+        "description": "Rest memory label"
+    },
     "rest": "Rest height",
     "@rest": {
         "description": "Rest height label"
@@ -659,11 +671,11 @@
     "@times": {
         "description": "Times label"
     },
-    "configureGoals": "Configure your goals to see your progress.",
+    "configureGoals": "Set your goals to personalize your experience and start your routines effectively.",
     "@configureGoals": {
         "description": "Button to configure goals"
     },
-    "noGoals": "No goals set",
+    "noGoals": "Set your goals to get started",
     "@noGoals": {
         "description": "No goals set message"
     },
@@ -715,8 +727,48 @@
     "@nameChanged": {
         "description": "Name changed message"
     },
-    "memoryNotConfigured": "The memory is not configured. Please set it manually in the app to enable statistics and start your routines properly.",
+    "memoryNotConfigured": "The memory is not configured in the app. Please set it manually in the app to enable statistics and start your routines properly.",
     "@memoryNotConfigured": {
         "description": "Instruction to configure the memory"
+    },
+    "routinesTitle": "Routines",
+    "@routinesTitle": {
+        "description": "Title for the routines section"
+    },
+    "routinesSteps": "Routines let you calculate burned calories and track the time spent at the three heights: rest, sitting, and standing.\nYou need to set up a few things to start your routines:",
+    "@routinesSteps": {
+        "description": "Description for setting up routines"
+    },
+    "step1Title": "1. Set up the memory buttons in the app",
+    "@step1Title": {
+        "description": "Title for setting up the memory buttons"
+    },
+    "step1Description": "By pressing the button with the letter M, you can configure the height for each button. The icons correspond to numbers 1, 2, and 3 on your desk control.",
+    "@step1Description": {
+        "description": "Description for setting up the memory buttons"
+    },
+    "step2Title": "2. Set up your height and weight",
+    "@step2Title": {
+        "description": "Title for setting up height and weight"
+    },
+    "step2Description": "In the settings section, go to Physical Settings to set your weight and height. This will help us calculate burned calories.",
+    "@step2Description": {
+        "description": "Description for setting up height and weight"
+    },
+    "step3Title": "3. Set up your goals",
+    "@step3Title": {
+        "description": "Title for setting up goals"
+    },
+    "step3Description": "In the statistics section, you will find a message and a button indicating that you need to configure your goals for sitting and standing time per day, as well as the calories you want to burn.",
+    "@step3Description": {
+        "description": "Description for setting up goals"
+    },
+    "finalNote": "Once everything is correctly configured,\nyou can start your routines.",
+    "@finalNote": {
+        "description": "Final note for setting up goals"
+    },
+    "reauthenticate": "Reauthenticate",
+    "@reauthenticate": {
+        "description": "Button to reauthenticate"
     }
 }

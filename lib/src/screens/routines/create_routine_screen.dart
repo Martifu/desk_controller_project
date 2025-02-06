@@ -64,10 +64,10 @@ class _CreateRoutineModalState extends State<CreateRoutineModal> {
     String message = '${AppLocalizations.of(context)!.memoriesMissing}\n';
 
     if (m1 == null) {
-      message += '${AppLocalizations.of(context)!.rest}\n';
+      message += '${AppLocalizations.of(context)!.sitting}\n ';
     }
     if (m2 == null) {
-      message += '${AppLocalizations.of(context)!.sitting}\n';
+      message += '${AppLocalizations.of(context)!.rest}\n';
     }
     if (m3 == null) {
       message += AppLocalizations.of(context)!.standing;
@@ -247,7 +247,7 @@ class _CreateRoutineModalState extends State<CreateRoutineModal> {
                             context: context,
                             builder: (context) {
                               return DialogConfirm(
-                                  icon: Icons.warning,
+                                  icon: Icons.info,
                                   iconColor: Colors.red[100],
                                   title: AppLocalizations.of(context)!.wait,
                                   content: memory,

@@ -11,7 +11,6 @@ import 'package:open_settings_plus/core/open_settings_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../home/home_screen.dart';
 
@@ -39,6 +38,7 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Future<void> _initializeBluetooth() async {
     try {
+      _systemDevices.clear();
       // Verifica estado del adaptador Bluetooth
       showStatusBT();
 
@@ -155,10 +155,11 @@ class _ScanScreenState extends State<ScanScreen> {
     }
     try {
       await FlutterBluePlus.startScan(
-          timeout: const Duration(seconds: 4),
-          withServices: [
-            Guid("ff12"),
-          ]);
+        timeout: const Duration(seconds: 4),
+        withServices: [
+          Guid("ff12"),
+        ],
+      );
     } catch (e) {
       print("Start Scan Error: $e");
       // showErrorDialog(AppLocalizations.of(context)!.allowPermissions);
@@ -284,14 +285,15 @@ class _ScanScreenState extends State<ScanScreen> {
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   child: Text(AppLocalizations.of(context)!.skip,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
                       )),
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) => const HomeScreen(),
                       ),
+                      (route) => false,
                     );
                   },
                 )

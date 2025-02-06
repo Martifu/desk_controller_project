@@ -1,20 +1,14 @@
-import 'dart:io';
-
 import 'package:async_button_builder/async_button_builder.dart';
-import 'package:controller/routes/auth_routes.dart';
 import 'package:controller/routes/settings_routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:controller/src/widgets/toast_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:controller/src/controllers/auth/auth_controller.dart';
 import 'package:controller/src/widgets/backround_blur.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
-import '../../widgets/dialogs/dialog_confirm.dart';
+import 'dart:async';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -26,6 +20,8 @@ class AccountSettingsScreen extends StatefulWidget {
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  List<String> _tapSequence = [];
+  Timer? _sequenceTimer;
 
   @override
   void initState() {
@@ -33,11 +29,47 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     _loadDataUser();
   }
 
+  @override
+  void dispose() {
+    _sequenceTimer?.cancel();
+    super.dispose();
+  }
+
   void _loadDataUser() {
     var authController = context.read<AuthController>();
     _nameController.text = authController.userInfo!.name!;
     _emailController.text = authController.userInfo!.email!;
     setState(() {});
+  }
+
+  void _checkEasterEgg() {
+    const expectedSequence = [
+      'email',
+      'email',
+      'email',
+      'password',
+      'password',
+      'email'
+    ];
+
+    if (_tapSequence.length > expectedSequence.length) {
+      _resetSequence();
+      return;
+    }
+
+    if (listEquals(_tapSequence, expectedSequence)) {
+      ToastService.showSuccess(context, 'Easter egg unlocked 🎉 - By Martifu');
+      _resetSequence();
+    }
+
+    _sequenceTimer?.cancel();
+    _sequenceTimer = Timer(const Duration(seconds: 2), _resetSequence);
+  }
+
+  void _resetSequence() {
+    setState(() {
+      _tapSequence = [];
+    });
   }
 
   @override
@@ -91,7 +123,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       radius: 50,
                       backgroundColor:
                           Theme.of(context).primaryColor.withOpacity(.1),
-                      child: const Icon(Icons.person, size: 40),
+                      child: const Icon(Icons.person,
+                          size: 40, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -138,13 +171,22 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  TextField(
-                    controller: _emailController,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: '',
-                      suffixIcon: Icon(Icons.lock,
-                          color: Colors.grey.withOpacity(.5), size: 15),
+                  GestureDetector(
+                    onTap: () {
+                      print('email');
+                      setState(() {
+                        _tapSequence.add('email');
+                        _checkEasterEgg();
+                      });
+                    },
+                    child: TextField(
+                      controller: _emailController,
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: '',
+                        suffixIcon: Icon(Icons.lock,
+                            color: Colors.grey.withOpacity(.5), size: 15),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -157,12 +199,21 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  TextField(
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: '********',
-                      suffixIcon: Icon(Icons.lock,
-                          color: Colors.grey.withOpacity(.5), size: 15),
+                  GestureDetector(
+                    onTap: () {
+                      print('password');
+                      setState(() {
+                        _tapSequence.add('password');
+                        _checkEasterEgg();
+                      });
+                    },
+                    child: TextField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: '********',
+                        suffixIcon: Icon(Icons.lock,
+                            color: Colors.grey.withOpacity(.5), size: 15),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -194,9 +245,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                           Navigator.of(context)
                               .pushNamed(SettingsRoutes.deleteAccount);
                         },
-                        child: const Text(
-                          "Delete account",
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.deleteAccount,
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 16,
                           ),

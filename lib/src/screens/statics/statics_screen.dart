@@ -26,6 +26,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var provider = Provider.of<StatisticsController>(context);
     return DefaultTabController(
       length: 4,
@@ -82,89 +83,125 @@ class _StatisticsScreenState extends State<StatisticsScreen>
               ],
             ),
           ),
-          body: TabBarView(
-            children: [
-              provider.withoutData
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.error_outline,
-                            size: 50,
-                            color: Colors.red,
+          body: provider.withoutData && !provider.loading
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 50,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.noGoals,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color:
+                                Theme.of(context).textTheme.displayLarge!.color,
                           ),
-                          const SizedBox(
-                            height: 10,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.configureGoals,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color:
+                                Theme.of(context).textTheme.displayLarge!.color,
                           ),
-                          Text(
-                            AppLocalizations.of(context)!.noGoals,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .displayLarge!
-                                  .color,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            AppLocalizations.of(context)!.configureGoals,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .displayLarge!
-                                  .color,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          PrincipalButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const GoalsScreen(),
-                                ),
-                              ).then((value) {
-                                provider.getStatistics(context);
-                              });
-                            },
-                            text: AppLocalizations.of(context)!
-                                .configureGoalsButton,
-                          )
-                        ],
-                      ),
-                    )
-                  : const SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 5,
-                          ),
-                          WarmCaloriesWidget(),
-                          Row(
-                            children: [
-                              SitTimeWidget(),
-                              SitMidWidget(),
-                              StandUpTimeWidget(),
-                            ],
-                          ),
-                          GoalsWidget(),
-                          MostUsedMemoriesWidget(),
-                          SizedBox(
-                            height: 90,
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        PrincipalButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const GoalsScreen(),
+                              ),
+                            ).then((value) {
+                              provider.getStatistics(context);
+                            });
+                          },
+                          text: AppLocalizations.of(context)!
+                              .configureGoalsButton,
+                        )
+                      ],
                     ),
-            ],
-          ),
+                  ),
+                )
+              : RefreshIndicator(
+                  color: Colors.white,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  onRefresh: () async {
+                    provider.getStatistics(context);
+                  },
+                  child: const SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 5,
+                        ),
+                        WarmCaloriesWidget(),
+                        Row(
+                          children: [
+                            SitTimeWidget(),
+                            SitMidWidget(),
+                            StandUpTimeWidget(),
+                          ],
+                        ),
+                        GoalsWidget(),
+                        MostUsedMemoriesWidget(),
+                        SizedBox(
+                          height: 90,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+          //  TabBarView(
+          //     children: List.generate(4, (index) {
+          //   // Mismo widget reutilizado
+          //   return RefreshIndicator(
+          //     color: Colors.white,
+          //     backgroundColor: Theme.of(context).primaryColor,
+          //     onRefresh: () async {
+          //       provider.getStatistics(context);
+          //     },
+          //     child: const SingleChildScrollView(
+          //       child: Column(
+          //         children: [
+          //           SizedBox(
+          //             height: 5,
+          //           ),
+          //           WarmCaloriesWidget(),
+          //           Row(
+          //             children: [
+          //               SitTimeWidget(),
+          //               SitMidWidget(),
+          //               StandUpTimeWidget(),
+          //             ],
+          //           ),
+          //           GoalsWidget(),
+          //           MostUsedMemoriesWidget(),
+          //           SizedBox(
+          //             height: 90,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   );
+          // })
         );
       }),
     );
@@ -511,10 +548,10 @@ class WarmCaloriesWidget extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       color: Theme.of(context).textTheme.displayLarge!.color,
                     )),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 14,
-                ),
+                // trailing: const Icon(
+                //   Icons.arrow_forward_ios_rounded,
+                //   size: 14,
+                // ),
               ),
             ),
             Divider(
@@ -851,18 +888,25 @@ class MemoryChildWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(100.0),
                       ),
                     ))
-                : Text(value!,
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color:
-                            Theme.of(context).textTheme.displayLarge!.color)),
+                : Image.asset(
+                    value! == "3"
+                        ? 'assets/images/icons/sitting.png'
+                        : value! == "2"
+                            ? 'assets/images/icons/rest.png'
+                            : 'assets/images/icons/stand_up.png',
+                    width: 30,
+                    color: Theme.of(context).textTheme.displayLarge!.color,
+                  ),
           ),
           const SizedBox(
             height: 8,
           ),
           Text(
-            '${value!}° memory',
+            value! == "3"
+                ? "$value° ${AppLocalizations.of(context)!.sittingMemory}"
+                : value! == "2"
+                    ? "$value° ${AppLocalizations.of(context)!.restMemory}"
+                    : "$value° ${AppLocalizations.of(context)!.standingMemory}",
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,

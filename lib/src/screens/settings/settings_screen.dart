@@ -1,10 +1,7 @@
-import 'package:controller/routes/app_routes.dart';
-import 'package:controller/src/widgets/toast_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:controller/src/controllers/desk/desk_controller.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controllers/auth/auth_controller.dart';
 
@@ -13,7 +10,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var deskController = Provider.of<DeskController>(context);
     return Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -54,23 +50,23 @@ class SettingsScreen extends StatelessWidget {
                   Navigator.pushNamed(context, '/settings/reminders');
                 },
               ),
-              ItemCustomSettings(
-                title: 'Tutorial',
-                icon: Icons.help_outline,
-                onTap: () {
-                  if (deskController.device != null &&
-                      deskController.device!.isConnected) {
-                    SharedPreferences.getInstance().then((prefs) {
-                      prefs.setBool('newUser', true);
-                    });
-                    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home,
-                        (Route<dynamic> route) => false);
-                  } else {
-                    ToastService.showInfo(
-                        context, AppLocalizations.of(context)!.connectDesk);
-                  }
-                },
-              ),
+              // ItemCustomSettings(
+              //   title: 'Tutorial',
+              //   icon: Icons.help_outline,
+              //   onTap: () {
+              //     if (deskController.device != null &&
+              //         deskController.device!.isConnected) {
+              //       SharedPreferences.getInstance().then((prefs) {
+              //         prefs.setBool('newUser', true);
+              //       });
+              //       Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home,
+              //           (Route<dynamic> route) => false);
+              //     } else {
+              //       ToastService.showInfo(
+              //           context, AppLocalizations.of(context)!.connectDesk);
+              //     }
+              //   },
+              // ),
               ItemCustomSettings(
                 title: 'About',
                 icon: Icons.info_outline,
@@ -159,8 +155,11 @@ class ItemAccountSettings extends StatelessWidget {
           contentPadding: const EdgeInsets.only(left: 10),
           leading: CircleAvatar(
             radius: 25,
-            backgroundColor: Theme.of(context).primaryColor,
-            child: const Icon(Icons.person, color: Colors.white),
+            backgroundColor: Theme.of(context).primaryColor.withOpacity(.1),
+            child: const Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
           ),
           title: Text(
               authController.userInfo != null
